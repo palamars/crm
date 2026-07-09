@@ -76,6 +76,27 @@ export default defineConfig(async ({ mode }) => {
         'lowlight',
         'interactjs',
       ],
+      esbuildOptions: {
+        plugins: [
+          {
+            // esbuild's dependency-scan phase doesn't go through Vite's
+            // plugin resolveId/load hooks, so it can't see the ~icons/lucide/*
+            // virtual modules the frappe-ui lucideIcons plugin resolves at
+            // dev-server runtime - stub them out for the scan only.
+            name: 'stub-lucide-icons-for-optimize-scan',
+            setup(build) {
+              build.onResolve({ filter: /^~icons\/lucide\// }, () => ({
+                path: 'lucide-icon-stub',
+                namespace: 'lucide-icon-stub',
+              }))
+              build.onLoad(
+                { filter: /.*/, namespace: 'lucide-icon-stub' },
+                () => ({ contents: 'export default {}', loader: 'js' }),
+              )
+            },
+          },
+        ],
+      },
     },
     server: {
       fs: {
