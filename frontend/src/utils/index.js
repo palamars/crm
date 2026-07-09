@@ -436,7 +436,7 @@ export function parseColor(color) {
 export function parseBgColor(color) {
   if (!color) return 'hover:!bg-surface-gray-2'
   if (color == 'black') {
-    return '!bg-gray-100 hover:!bg-gray-200'
+    return '!bg-surface-gray-2 hover:!bg-surface-gray-3'
   }
   return `!bg-${color}-50 hover:!bg-${color}-100`
 }
